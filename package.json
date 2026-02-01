@@ -19,10 +19,23 @@
     "optimization",
     "compiler",
     "typescript",
-    "javascript"
+    "javascript",
+    "functional-programming",
+    "recursion",
+    "performance",
+    "stack-overflow",
+    "tco"
   ],
-  "author": "",
+  "author": "Matthew <JHXSMatthew@users.noreply.github.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JHXSMatthew/js-tail-recursion-opt-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JHXSMatthew/js-tail-recursion-opt-plugin/issues"
+  },
+  "homepage": "https://github.com/JHXSMatthew/js-tail-recursion-opt-plugin#readme",
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.0",
