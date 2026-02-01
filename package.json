@@ -1,6 +1,6 @@
 {
   "name": "js-tail-recursion-opt-plugin",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A modern TypeScript/JavaScript compiler plugin for automatic tail call optimization",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,9 +8,12 @@
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "benchmark": "npm run build && node benchmark/simple.js",
     "benchmark:full": "npm run build && node benchmark/suite.js",
-    "prepublishOnly": "npm run build"
+    "benchmark:report": "npm run build && node benchmark/visualize.js > PERFORMANCE.md",
+    "prepublishOnly": "npm run build && npm test",
+    "prepare": "npm run build"
   },
   "keywords": [
     "babel-plugin",

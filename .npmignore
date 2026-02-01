@@ -1,0 +1,25 @@
+# Source files
+src/
+test/
+examples/
+benchmark/
+
+# Config files
+tsconfig.json
+jest.config.js
+
+# CI/CD
+.github/
+
+# Development files
+*.test.ts
+*.test.js
+
+# Documentation (keep README, LICENSE, CHANGELOG)
+CONTRIBUTING.md
+PROJECT_STATUS.md
+
+# Build artifacts
+coverage/
+*.log
+.DS_Store
