@@ -118,13 +118,36 @@ function createAssignmentAndContinue(
   callExpr: t.CallExpression,
   paramNames: string[]
 ): t.BlockStatement {
-  const tempVarDeclarators: t.VariableDeclarator[] = [];
   const assignments: t.Statement[] = [];
   
-  // 第一步：为所有参数创建临时变量
-  // 需要处理：arguments 可能比 params 少（有默认值）
+  // 优化：如果只有一个参数或没有参数，直接赋值
+  if (paramNames.length === 0) {
+    assignments.push(t.continueStatement());
+    return t.blockStatement(assignments);
+  }
+  
+  if (paramNames.length === 1) {
+    // 单参数情况：直接赋值，无需临时变量
+    const paramName = paramNames[0];
+    const arg = callExpr.arguments[0] || t.identifier('undefined');
+    assignments.push(
+      t.expressionStatement(
+        t.assignmentExpression(
+          '=',
+          t.identifier(paramName),
+          arg as t.Expression
+        )
+      )
+    );
+    assignments.push(t.continueStatement());
+    return t.blockStatement(assignments);
+  }
+  
+  // 多参数情况：使用临时变量避免参数相互依赖问题
+  const tempVarDeclarators: t.VariableDeclarator[] = [];
+  
   paramNames.forEach((paramName, index) => {
-    const tempName = `_${paramName}_`;
+    const tempName = `_temp${index}`;
     const arg = index < callExpr.arguments.length 
       ? callExpr.arguments[index]
       : t.identifier('undefined');
@@ -138,25 +161,21 @@ function createAssignmentAndContinue(
   });
   
   // 添加临时变量声明
-  if (tempVarDeclarators.length > 0) {
-    assignments.push(t.variableDeclaration('let', tempVarDeclarators));
-  }
+  assignments.push(t.variableDeclaration('const', tempVarDeclarators));
   
-  // 第二步：将临时变量赋值回参数
-  paramNames.forEach(paramName => {
-    const tempName = `_${paramName}_`;
+  // 将临时变量赋值回参数
+  paramNames.forEach((paramName, index) => {
     assignments.push(
       t.expressionStatement(
         t.assignmentExpression(
           '=',
           t.identifier(paramName),
-          t.identifier(tempName)
+          t.identifier(`_temp${index}`)
         )
       )
     );
   });
   
-  // 第三步：添加 continue 语句
   assignments.push(t.continueStatement());
   
   return t.blockStatement(assignments);
