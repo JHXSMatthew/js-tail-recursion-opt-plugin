@@ -57,6 +57,14 @@ function transformFunctionBody(
       return t.blockStatement([
         createAssignmentAndContinue(body, paramNames)
       ]);
+    } else if (t.isConditionalExpression(body)) {
+      return t.blockStatement([
+        transformConditionalReturn(body, functionName, paramNames)
+      ]);
+    } else if (t.isLogicalExpression(body)) {
+      return t.blockStatement([
+        transformLogicalReturn(body, functionName, paramNames)
+      ]);
     }
     return t.blockStatement([t.returnStatement(body)]);
   }
@@ -198,6 +206,14 @@ function transformLogicalReturn(
     let rightBlock: t.BlockStatement;
     if (isRecursiveCall(right, functionName) && t.isCallExpression(right)) {
       rightBlock = createAssignmentAndContinue(right, paramNames);
+    } else if (t.isConditionalExpression(right)) {
+      rightBlock = t.blockStatement([
+        transformConditionalReturn(right, functionName, paramNames)
+      ]);
+    } else if (t.isLogicalExpression(right)) {
+      rightBlock = t.blockStatement([
+        transformLogicalReturn(right, functionName, paramNames)
+      ]);
     } else {
       rightBlock = t.blockStatement([t.returnStatement(right)]);
     }
@@ -212,6 +228,14 @@ function transformLogicalReturn(
     let rightBlock: t.BlockStatement;
     if (isRecursiveCall(right, functionName) && t.isCallExpression(right)) {
       rightBlock = createAssignmentAndContinue(right, paramNames);
+    } else if (t.isConditionalExpression(right)) {
+      rightBlock = t.blockStatement([
+        transformConditionalReturn(right, functionName, paramNames)
+      ]);
+    } else if (t.isLogicalExpression(right)) {
+      rightBlock = t.blockStatement([
+        transformLogicalReturn(right, functionName, paramNames)
+      ]);
     } else {
       rightBlock = t.blockStatement([t.returnStatement(right)]);
     }

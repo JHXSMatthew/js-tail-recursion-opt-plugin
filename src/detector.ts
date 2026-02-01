@@ -18,12 +18,16 @@ export function detectTailRecursion(
   // 获取函数体
   const body = functionPath.node.body;
   if (!t.isBlockStatement(body)) {
-    // 如果是箭头函数的简写形式，检查表达式是否是递归调用
+    // 如果是箭头函数的简写形式，检查表达式
     if (isRecursiveCall(body, functionName)) {
       tailCalls.push({
         callExpression: body as t.CallExpression,
         path: functionPath
       });
+    } else if (t.isConditionalExpression(body)) {
+      checkConditionalExpression(body, functionName, tailCalls, functionPath);
+    } else if (t.isLogicalExpression(body)) {
+      checkLogicalExpression(body, functionName, tailCalls, functionPath);
     }
     return tailCalls;
   }
@@ -123,6 +127,11 @@ function checkLogicalExpression(
   // 递归检查嵌套的逻辑表达式
   if (t.isLogicalExpression(node.right)) {
     checkLogicalExpression(node.right, functionName, tailCalls, functionPath);
+  }
+  
+  // 递归检查右侧的条件表达式
+  if (t.isConditionalExpression(node.right)) {
+    checkConditionalExpression(node.right, functionName, tailCalls, functionPath);
   }
 }
 
@@ -243,8 +252,12 @@ function isInTailPosition(path: any): boolean {
       return false;
     }
     
-    // 如果是函数体，说明到达了函数边界
+    // 如果是函数体，检查是否是箭头函数的表达式体
     if (t.isFunction(parent.node)) {
+      // 箭头函数的表达式体（非块语句）在尾位置
+      if (t.isArrowFunctionExpression(parent.node) && parent.node.body === current.node) {
+        return true;
+      }
       return false;
     }
     

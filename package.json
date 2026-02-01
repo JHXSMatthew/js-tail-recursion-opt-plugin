@@ -8,6 +8,8 @@
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
+    "benchmark": "npm run build && node benchmark/simple.js",
+    "benchmark:full": "npm run build && node benchmark/suite.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
