@@ -332,6 +332,47 @@ MIT © [Your Name]
 - [Issues](https://github.com/JHXSMatthew/js-tail-recursion-opt-plugin/issues)
 - [Babel Plugin Handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md)
 
+## 🚀 Lynx Framework Integration
+
+For users of the Lynx framework with rSpeedy build system, we provide a dedicated plugin:
+
+- [js-tail-recursion-opt-rspeedy-plugin](https://github.com/JHXSMatthew/js-tail-recursion-opt-rspeedy-plugin) - Lynx rSpeedy plugin for automatic tail recursion optimization
+
+### Lynx Installation
+
+```bash
+npm install js-tail-recursion-opt-rspeedy-plugin --save-dev
+```
+
+### Lynx Configuration
+
+```javascript
+import { defineConfig } from "@lynx-js/rspeedy";
+import { pluginReactLynx } from "@lynx-js/react-rsbuild-plugin";
+import { pluginTailRecursion } from "js-tail-recursion-opt-rspeedy-plugin";
+
+export default defineConfig({
+  source: {
+    entry: "./index.tsx",
+    alias: {
+      "@components": "./components",
+      "@assets": "./assets",
+    },
+  },
+  plugins: [
+    pluginReactLynx(),
+    pluginTailRecursion({
+      // Configuration options (all optional)
+      onlyAnnotated: false,        // Only optimize functions with @tail-recursion annotation
+      annotationTag: "@tail-recursion", // Custom annotation tag
+      debug: false,                // Enable debug logging
+      exclude: [/node_modules/],   // Files to exclude
+      include: [/\.(js|ts|jsx|tsx)$/], // Files to include
+    })
+  ],
+});
+```
+
 ## 📚 Related Projects
 
 - [babel-plugin-transform-tail-calls](https://github.com/babel/babel/tree/main/packages/babel-plugin-transform-tail-calls) - Babel's experimental tail call plugin
